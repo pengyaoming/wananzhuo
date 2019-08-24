@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jxmfkj.www.myapplication.Entity.Translation1;
+import com.jxmfkj.www.myapplication.api.ApiAserver;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,7 +51,7 @@ public class TranslationActivity extends AppCompatActivity {
                 .build();
 
         // 步骤5:创建 网络请求接口 的实例
-        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);
+        ApiAserver request = retrofit.create(ApiAserver.class);
 
         //对 发送请求 进行封装(设置需要翻译的内容)
         Call<Translation1> call = request.getCall(edtMessage.getText().toString());

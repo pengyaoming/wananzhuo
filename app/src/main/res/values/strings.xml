@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="account_number">账号</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="the_account_number">请输入账号</string>
+    <string name="the_password">请输入密码</string>
+    <string name="the_repassword">请再次输入密码</string>
 </resources>

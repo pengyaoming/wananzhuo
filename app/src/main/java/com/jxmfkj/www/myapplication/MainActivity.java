@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
+import com.jxmfkj.www.myapplication.api.ApiAserver;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("http://fy.iciba.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);
+        ApiAserver request = retrofit.create(ApiAserver.class);
 
         Call<ThereEntity> call = request.getCall();
         call.enqueue(new Callback<ThereEntity>() {

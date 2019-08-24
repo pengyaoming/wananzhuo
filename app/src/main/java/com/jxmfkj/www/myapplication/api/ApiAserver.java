@@ -1,6 +1,7 @@
-package com.jxmfkj.www.myapplication;
+package com.jxmfkj.www.myapplication.api;
 
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
+import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
@@ -14,10 +15,11 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface GetRequest_Interface {
+public interface ApiAserver {
 
     @GET("ajax.php?a=fy&f=auto&t=auto&w=hello%20world")
     Call<ThereEntity> getCall();
+
     // 注解里传入 网络请求 的部分URL地址
     // Retrofit把网络请求的URL分成了两部分：一部分放在Retrofit对象里，另一部分放在网络请求接口里
     // 如果接口里的url是一个完整的网址，那么放在Retrofit对象里的URL可以忽略
@@ -31,14 +33,28 @@ public interface GetRequest_Interface {
 
     /**
      * 玩安卓开放接口-公众号接口
+     *
      * @return
      */
     @GET("/wxarticle/chapters/json")
     Call<SwEntity> getSwCall();
+
     /**
      * 公众号历史记录
-     *
      */
     @GET("wxarticle/list/{id}/{page}/json")
-    Call<HistoryEntity> getHistCall(@Path("id") String id,@Path("page") String page);
+    Call<HistoryEntity> getHistCall(@Path("id") String id, @Path("page") String page);
+
+    /**
+     * 注册接口
+     */
+    @FormUrlEncoded
+    @POST("/user/register")
+    Call<RegisterEntity> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
+
+    @FormUrlEncoded
+    @POST("/user/login")
+    Call<RegisterEntity> getLogin(@Field("username") String username, @Field("password") String password);
+
+
 }

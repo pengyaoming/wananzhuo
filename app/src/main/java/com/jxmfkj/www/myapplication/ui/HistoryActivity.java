@@ -1,6 +1,7 @@
 package com.jxmfkj.www.myapplication.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -8,10 +9,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
-import com.jxmfkj.www.myapplication.GetRequest_Interface;
+import com.jxmfkj.www.myapplication.api.ApiAserver;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.adapter.HistoryAdapter;
 
@@ -32,6 +35,7 @@ public class HistoryActivity extends AppCompatActivity {
     private HistoryAdapter adapter;
     private int page = 0;
     private int id = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +46,9 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-
     private void initView() {
         Intent intent = getIntent();
-         id = intent.getIntExtra("id",0);
+        id = intent.getIntExtra("id", 0);
         swipeRefreshLayout = findViewById(R.id.swipe);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -64,31 +67,38 @@ public class HistoryActivity extends AppCompatActivity {
                         adapter.setNewData(new ArrayList<HistoryEntity.DataBean.DatasBean>());
                         entite();
                         swipeRefreshLayout.setRefreshing(false);
-                        Toast.makeText(HistoryActivity.this,"刷新成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(HistoryActivity.this, "刷新成功", Toast.LENGTH_LONG).show();
                     }
-                },1000);
+                }, 1000);
             }
         });
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(HistoryActivity.this.adapter.getItem(position).getLink())));
+            }
+        });
     }
+
     private void entite() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.wanandroid.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        final GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);
-        Call<HistoryEntity> call  = request.getHistCall(id+"",page+"");
+        final ApiAserver request = retrofit.create(ApiAserver.class);
+        Call<HistoryEntity> call = request.getHistCall(id + "", page + "");
         call.enqueue(new Callback<HistoryEntity>() {
             @Override
             public void onResponse(Call<HistoryEntity> call, Response<HistoryEntity> response) {
                 adapter.addData(response.body().getData().getDatas());
                 recyclerView.setAdapter(adapter);
             }
-
             @Override
             public void onFailure(Call<HistoryEntity> call, Throwable t) {
-                Toast.makeText(HistoryActivity.this,"请求失败",Toast.LENGTH_LONG).show();
+                Toast.makeText(HistoryActivity.this, "请求失败", Toast.LENGTH_LONG).show();
+
             }
         });
     }
