@@ -14,6 +14,8 @@ import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.api.ApiAserver;
 import com.jxmfkj.www.myapplication.MainActivity;
 import com.jxmfkj.www.myapplication.R;
+import com.jxmfkj.www.myapplication.api.ApiHepler;
+import com.jxmfkj.www.myapplication.api.WrapperRspEntity;
 
 import butterknife.BindView;
 import okhttp3.OkHttpClient;
@@ -23,6 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observer;
 
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.edtAccount)
@@ -129,33 +132,51 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "账号或密码不能小于6位数", Toast.LENGTH_LONG).show();
             return;
         }
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();//创建拦截对象
 
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这一句一定要记得写，否则没有数据输出
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(logInterceptor)  //设置打印拦截日志
-//                .addInterceptor(new LogInterceptor())  //自定义的拦截日志，拦截简单东西用，后面会有介绍
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.wanandroid.com")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-
-        final ApiAserver request = retrofit.create(ApiAserver.class);
-        Call<RegisterEntity> call = request.getRegister(username, password, repassword);
-        call.enqueue(new Callback<RegisterEntity>() {
+        ApiHepler.postregister(username, password, repassword, new Observer<WrapperRspEntity>() {
             @Override
-            public void onResponse(Call<RegisterEntity> call, Response<RegisterEntity> response) {
-                startActivity(new Intent(LoginActivity.this, LoginActivity.class));
-                onResume();
+            public void onCompleted() {
+
             }
 
             @Override
-            public void onFailure(Call<RegisterEntity> call, Throwable t) {
+            public void onError(Throwable e) {
 
+            }
+
+            @Override
+            public void onNext(WrapperRspEntity wrapperRspEntity) {
+                onResume();
+                Toast.makeText(LoginActivity.this, "注册成功", Toast.LENGTH_LONG).show();
             }
         });
+//        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();//创建拦截对象
+//
+//        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这一句一定要记得写，否则没有数据输出
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .addNetworkInterceptor(logInterceptor)  //设置打印拦截日志
+////                .addInterceptor(new LogInterceptor())  //自定义的拦截日志，拦截简单东西用，后面会有介绍
+//                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://www.wanandroid.com")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .client(client)
+//                .build();
+
+
+//        final ApiAserver request = retrofit.create(ApiAserver.class);
+//        Call<RegisterEntity> call = request.getRegister(username, password, repassword);
+//        call.enqueue(new Callback<RegisterEntity>() {
+//            @Override
+//            public void onResponse(Call<RegisterEntity> call, Response<RegisterEntity> response) {
+//
+//                onResume();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RegisterEntity> call, Throwable t) {
+//
+//            }
+//        });
     }
 }

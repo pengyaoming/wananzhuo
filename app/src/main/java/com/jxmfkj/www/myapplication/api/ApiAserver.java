@@ -7,13 +7,16 @@ import com.jxmfkj.www.myapplication.Entity.Translation1;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import rx.Observable;
 
 public interface ApiAserver {
 
@@ -50,7 +53,7 @@ public interface ApiAserver {
      */
     @FormUrlEncoded
     @POST("/user/register")
-    Call<RegisterEntity> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
+    Observable<WrapperRspEntity> getRegister(@FieldMap Map<String,String> filds);
 
     @FormUrlEncoded
     @POST("/user/login")
