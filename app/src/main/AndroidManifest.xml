@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jxmfkj.www.myapplication">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,9 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".TranslationActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"></activity>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize">
@@ -32,6 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".login.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"></activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

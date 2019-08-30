@@ -14,15 +14,6 @@
         android:layout_marginTop="70dp"
         android:src="@drawable/ic_head" />
 
-    <TextView
-        android:id="@+id/tvLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="@string/login"
-        android:textSize="24sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,14 +22,6 @@
         android:layout_marginRight="50dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/account_number"
-            android:textColor="@color/textColor"
-            android:textSize="18sp" />
-
         <EditText
             android:id="@+id/edtAccount"
             android:layout_width="match_parent"
@@ -46,6 +29,7 @@
             android:layout_marginLeft="10dp"
             android:background="@null"
             android:hint="@string/the_account_number"
+            android:padding="5dp"
             android:textColor="@color/textColor"
             android:textSize="18sp" />
     </LinearLayout>
@@ -58,14 +42,6 @@
         android:layout_marginRight="50dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/password"
-            android:textColor="@color/textColor"
-            android:textSize="18sp" />
-
         <EditText
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
@@ -73,8 +49,10 @@
             android:layout_marginLeft="10dp"
             android:background="@null"
             android:hint="@string/the_password"
+            android:padding="5dp"
             android:textColor="@color/textColor"
             android:textSize="18sp" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -84,16 +62,7 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="50dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/password"
-            android:textColor="@color/textColor"
-            android:textSize="18sp" />
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/edtRepassword"
@@ -102,8 +71,11 @@
             android:layout_marginLeft="10dp"
             android:background="@null"
             android:hint="@string/the_repassword"
+            android:padding="5dp"
             android:textColor="@color/textColor"
             android:textSize="18sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -123,30 +95,6 @@
             android:background="@drawable/text_click"
             android:gravity="center"
             android:text="@string/register"
-            android:textColor="@color/textColor"
-            android:textSize="22sp" />
-        <TextView
-            android:id="@+id/tvRegister1"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/text_click"
-            android:gravity="center"
-            android:text="@string/register"
-            android:textColor="@color/textColor"
-            android:textSize="22sp"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/tvClick"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/text_click"
-            android:gravity="center"
-            android:text="@string/login"
             android:textColor="@color/textColor"
             android:textSize="22sp" />
     </LinearLayout>

@@ -1,59 +1,86 @@
 package com.jxmfkj.www.myapplication;
 
-import android.content.Intent;
+import android.os.SystemClock;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
-import com.jxmfkj.www.myapplication.Entity.ThereEntity;
-import com.jxmfkj.www.myapplication.api.ApiAserver;
+import com.jxmfkj.www.myapplication.adapter.MainAdapter;
+import com.jxmfkj.www.myapplication.ui.consult.ConsultFagment;
+import com.jxmfkj.www.myapplication.ui.home.HomeFragment;
+import com.jxmfkj.www.myapplication.ui.mine.MineFragment;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView textView;
+
+    private ViewPager viewPager;
+
+    private TabLayout tabLayout;
+    private long clickTime = 0;
+    private MainAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        ButterKnife.bind(this);
         initView();
-        request();
     }
 
     private void initView() {
-        textView = findViewById(R.id.tvClick);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SwActivity.class));
-            }
-        });
+        viewPager = findViewById(R.id.viewPage);
+        tabLayout = findViewById(R.id.tablayout);
+        ArrayList<String> titles = new ArrayList<>();
+        titles.add("公众号");
+        titles.add("首页");
+        titles.add("我的");
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(new HomeFragment());
+        fragments.add(new ConsultFagment());
+        fragments.add(new MineFragment());
+        ArrayList<Integer> integers = new ArrayList<>();
+        integers.add(R.drawable.ic_insert_chart_black_24dp);
+        integers.add(R.drawable.ic_home_black_24dp);
+        integers.add(R.drawable.ic_mine);
+        adapter = new MainAdapter(getSupportFragmentManager(), fragments, integers, titles, this);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        //循环添加图片
+        addlayout(titles);
     }
 
-    private void request() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://fy.iciba.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ApiAserver request = retrofit.create(ApiAserver.class);
-
-        Call<ThereEntity> call = request.getCall();
-        call.enqueue(new Callback<ThereEntity>() {
-            @Override
-            public void onResponse(Call<ThereEntity> call, Response<ThereEntity> response) {
-                response.body().show();
+    private void addlayout(ArrayList<String> titles) {
+        for (int i = 0; i < titles.size(); i++) {
+            tabLayout.getTabAt(i).setText(titles.get(i));
+        }
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.setCustomView(adapter.getTabVie(i));
             }
+        }
+    }
 
-            @Override
-            public void onFailure(Call<ThereEntity> call, Throwable t) {
-                System.out.println("连接失败");
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (SystemClock.uptimeMillis() - clickTime <= 1500) {
+                //如果两次的时间差＜1s，就不执行操作
+            } else {
+                //当前系统时间的毫秒值
+                clickTime = SystemClock.uptimeMillis();
+                Toast.makeText(MainActivity.this, "再次点击退出", Toast.LENGTH_SHORT).show();
+                return false;
             }
-        });
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

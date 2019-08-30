@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
-import com.jxmfkj.www.myapplication.api.ApiAserver;
+import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.adapter.HistoryAdapter;
 
@@ -87,14 +87,16 @@ public class HistoryActivity extends AppCompatActivity {
                 .baseUrl("https://www.wanandroid.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        final ApiAserver request = retrofit.create(ApiAserver.class);
+        final ApiServer request = retrofit.create(ApiServer.class);
         Call<HistoryEntity> call = request.getHistCall(id + "", page + "");
         call.enqueue(new Callback<HistoryEntity>() {
             @Override
             public void onResponse(Call<HistoryEntity> call, Response<HistoryEntity> response) {
+
                 adapter.addData(response.body().getData().getDatas());
                 recyclerView.setAdapter(adapter);
             }
+
             @Override
             public void onFailure(Call<HistoryEntity> call, Throwable t) {
                 Toast.makeText(HistoryActivity.this, "请求失败", Toast.LENGTH_LONG).show();

@@ -1,24 +1,28 @@
 package com.jxmfkj.www.myapplication.api;
 
+import com.jxmfkj.www.myapplication.Entity.BannerEntity;
+import com.jxmfkj.www.myapplication.Entity.BaseResponse;
+import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
+import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
 
-import java.util.List;
-import java.util.Map;
 
+import java.util.List;
+
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import rx.Observable;
 
-public interface ApiAserver {
+
+public interface ApiServer {
 
     @GET("ajax.php?a=fy&f=auto&t=auto&w=hello%20world")
     Call<ThereEntity> getCall();
@@ -50,14 +54,21 @@ public interface ApiAserver {
 
     /**
      * 注册接口
+     *
+     * @return
      */
     @FormUrlEncoded
     @POST("/user/register")
-    Observable<WrapperRspEntity> getRegister(@FieldMap Map<String,String> filds);
+    Observable<BaseResponse> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
 
     @FormUrlEncoded
     @POST("/user/login")
     Call<RegisterEntity> getLogin(@Field("username") String username, @Field("password") String password);
+
+    @GET("/banner/json")
+    Observable<BaseResponse<List<BannerEntity>>> getBanner();
+    @GET("/article/list/{page}/json")
+    Observable<BaseResponse<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
 
 
 }

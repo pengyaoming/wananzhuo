@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
 import com.jxmfkj.www.myapplication.adapter.SwAdapter;
-import com.jxmfkj.www.myapplication.api.ApiAserver;
+import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.ui.HistoryActivity;
 
 import java.util.ArrayList;
@@ -45,22 +45,22 @@ public class SwActivity extends AppCompatActivity {
     }
 
     private void initClick() {
-       adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-           @Override
-           public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-               Intent intent = new Intent(SwActivity.this, HistoryActivity.class);
-                intent.putExtra("id",SwActivity.this.adapter.getItem(position).getId());
+                Intent intent = new Intent(SwActivity.this, HistoryActivity.class);
+                intent.putExtra("id", SwActivity.this.adapter.getItem(position).getId());
                 startActivity(intent);
-           }
-       });
+            }
+        });
     }
 
     private void initView() {
         swipeRefreshLayout = findViewById(R.id.swipe);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adapter = new SwAdapter();
         initData();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -87,7 +87,7 @@ public class SwActivity extends AppCompatActivity {
                 .baseUrl("https://www.wanandroid.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        final ApiAserver request = retrofit.create(ApiAserver.class);
+        final ApiServer request = retrofit.create(ApiServer.class);
 
         Call<SwEntity> call = request.getSwCall();
         call.enqueue(new Callback<SwEntity>() {
