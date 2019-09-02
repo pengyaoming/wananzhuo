@@ -5,6 +5,8 @@ import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
+import com.jxmfkj.www.myapplication.Entity.NewsEntity;
+import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
@@ -53,6 +55,17 @@ public interface ApiServer {
     Call<HistoryEntity> getHistCall(@Path("id") String id, @Path("page") String page);
 
     /**
+     * 玩安卓开放接口-公众号接口
+     *
+     * @return
+     */
+    @GET("/wxarticle/chapters/json")
+    Observable<BaseResponse<List<SwEntity>>> getChapters();
+
+    @GET("wxarticle/list/{id}/{page}/json")
+    Observable<BaseResponse<NewsWEntity<List<NewsEntity>>>> getArticle(@Path("id") String id, @Path("page") String page);
+
+    /**
      * 注册接口
      *
      * @return
@@ -63,10 +76,12 @@ public interface ApiServer {
 
     @FormUrlEncoded
     @POST("/user/login")
-    Call<RegisterEntity> getLogin(@Field("username") String username, @Field("password") String password);
+    Observable<RegisterEntity> getLogin(@Field("username") String username, @Field("password") String password);
+
 
     @GET("/banner/json")
     Observable<BaseResponse<List<BannerEntity>>> getBanner();
+
     @GET("/article/list/{page}/json")
     Observable<BaseResponse<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
 

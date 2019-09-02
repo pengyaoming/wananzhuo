@@ -67,15 +67,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 .subscribe(new Observer<BaseResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
                     public void onNext(BaseResponse registerEntityBaseResponse) {
                         if (registerEntityBaseResponse.getCode() != 0) {
                             Toast.makeText(RegisterActivity.this, registerEntityBaseResponse.getMsg(), Toast.LENGTH_LONG).show();
-
-                        }else {
+                        } else {
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             Toast.makeText(RegisterActivity.this, "登录成功", Toast.LENGTH_LONG).show();
                         }
@@ -88,7 +86,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                     @Override
                     public void onComplete() {
-
                     }
                 });
     }

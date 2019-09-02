@@ -14,8 +14,13 @@ import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.MainActivity;
 import com.jxmfkj.www.myapplication.R;
+import com.jxmfkj.www.myapplication.api.RetrofitUitl;
 
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -83,33 +88,39 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "账号或密码不能小于6位数", Toast.LENGTH_LONG).show();
             return;
         }
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();//创建拦截对象
+        RetrofitUitl.getInstance().Api()
+                .getLogin(username, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RegisterEntity>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这一句一定要记得写，否则没有数据输出
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(logInterceptor)  //设置打印拦截日志
-//                .addInterceptor(new LogInterceptor())  //自定义的拦截日志，拦截简单东西用，后面会有介绍
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.wanandroid.com")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-        final ApiServer request = retrofit.create(ApiServer.class);
-        Call<RegisterEntity> call = request.getLogin(username, password);
-        call.enqueue(new Callback<RegisterEntity>() {
-            @Override
-            public void onResponse(Call<RegisterEntity> call, Response<RegisterEntity> response) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
-            }
+                    }
 
-            @Override
-            public void onFailure(Call<RegisterEntity> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_LONG).show();
-            }
-        });
+                    @Override
+                    public void onNext(RegisterEntity registerEntity) {
+                        if (registerEntity.getErrorCode() != 0) {
+                            Toast.makeText(LoginActivity.this, registerEntity.getErrorMsg(), Toast.LENGTH_LONG).show();
+                            return;
+                        } else {
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                            Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
     //注册接口
