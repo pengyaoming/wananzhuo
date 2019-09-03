@@ -29,9 +29,11 @@ import java.util.List;
 public class NewsTitlesAdapter extends CommonNavigatorAdapter {
 
     private List<String> entities;
+
     public interface OnItemClickListener {
         void onItemClick(int index);
     }
+
     private NewsTitlesAdapter.OnItemClickListener mOnItemClickListener;
 
     public NewsTitlesAdapter() {
@@ -63,8 +65,8 @@ public class NewsTitlesAdapter extends CommonNavigatorAdapter {
 
     @Override
     public IPagerTitleView getTitleView(Context context, final int index) {
-        final int mSelectedColor = ContextCompat.getColor(context, R.color.colorAccent);
-        final int mNormalColor = ContextCompat.getColor(context, R.color.news_top_tab_text_color);
+        final int mSelectedColor = ContextCompat.getColor(context, R.color.white);
+        final int mNormalColor = ContextCompat.getColor(context, R.color.white);
         final CommonPagerTitleView commonPagerTitleView = new CommonPagerTitleView(context);
         commonPagerTitleView.setContentView(R.layout.news_tab_layout);
         final TextView title = commonPagerTitleView.findViewById(R.id.title);
@@ -161,7 +163,7 @@ public class NewsTitlesAdapter extends CommonNavigatorAdapter {
         linePagerIndicator.setYOffset(UIUtil.dip2px(context, 4));
         linePagerIndicator.setLineHeight(UIUtil.dip2px(context, 1.8));
         linePagerIndicator.setRoundRadius(UIUtil.dip2px(context, 2));
-        linePagerIndicator.setColors(ContextCompat.getColor(context, R.color.colorPrimary));
+        linePagerIndicator.setColors(ContextCompat.getColor(context, R.color.white));
         return linePagerIndicator;
     }
 }

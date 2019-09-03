@@ -1,5 +1,6 @@
 package com.jxmfkj.www.myapplication.ui.consult;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.ui.WebViewActivity;
 import com.youth.banner.Banner;
 import com.youth.banner.loader.ImageLoaderInterface;
 
@@ -39,7 +41,7 @@ public class ConsultFagment extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<ConsultEntity> uris;
-    private ConsultAdapter adapter;
+    private ConsultAdapter mAdapter;
     private int page = 0;
     private int pageSize = 20;
     private boolean isErr = false;
@@ -55,18 +57,35 @@ public class ConsultFagment extends Fragment {
         return v;
     }
 
+    public static ConsultFagment getInstance() {
+        ConsultFagment fragment = new ConsultFagment();
+        return fragment;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
         initBanner();
         initData();
+        onClick();
+    }
+
+    private void onClick() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", mAdapter.getItem(position).getLink());
+                startActivity(intent);
+            }
+        });
     }
 
 
     private void initView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ConsultAdapter();
+        mAdapter = new ConsultAdapter();
         swipeRefreshLayout.setColorSchemeColors(Color.BLACK, Color.GREEN, Color.RED, Color.YELLOW, Color.BLUE);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         //下拉刷新
@@ -76,7 +95,7 @@ public class ConsultFagment extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.setNewData(uris);
+                        mAdapter.setNewData(uris);
                         loadData(false);
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -115,7 +134,7 @@ public class ConsultFagment extends Fragment {
                             }
                             banner.setImages(images).setBannerTitles(titles).setDelayTime(3000).isAutoPlay(true).start();
                         }
-                        recyclerView.setAdapter(adapter);
+                        recyclerView.setAdapter(mAdapter);
                     }
 
                     @Override
@@ -128,12 +147,12 @@ public class ConsultFagment extends Fragment {
 
                     }
                 });
-        adapter.addHeaderView(view);
+        mAdapter.addHeaderView(view);
     }
 
     private void initData() {
         loadData(false);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAdapter);
 
     }
 
@@ -153,7 +172,7 @@ public class ConsultFagment extends Fragment {
 
                     @Override
                     public void onNext(BaseResponse<CssEntity<List<ConsultEntity>>> listBaseResponse) {
-                        adapter.addData(listBaseResponse.getData().getDatas());
+                        mAdapter.addData(listBaseResponse.getData().getDatas());
                         pageSize = listBaseResponse.getData().getDatas().size();
 
                     }
@@ -172,24 +191,24 @@ public class ConsultFagment extends Fragment {
 
 
     private void isFeish() {
-        adapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
                 recyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (pageSize >= TOTAL_COUNTER) {
-                            adapter.loadMoreEnd();
+                            mAdapter.loadMoreEnd();
                         } else {
                             if (!isErr) {
                                 page++;
                                 loadData(true);
-                                adapter.loadMoreComplete();
+                                mAdapter.loadMoreComplete();
                             } else {
                                 //获取更多数据失败 PullToRefreshUseActivity
                                 isErr = true;
                                 Toast.makeText(getActivity(), "获取更多数据失败", Toast.LENGTH_LONG).show();
-                                adapter.loadMoreFail();
+                                mAdapter.loadMoreFail();
                             }
                         }
                     }

@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        ButterKnife.bind(this);
         initView();
     }
 
@@ -43,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         titles.add("首页");
         titles.add("我的");
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(new HomeFragment());
-        fragments.add(new ConsultFagment());
-        fragments.add(new MineFragment());
+        fragments.add(HomeFragment.getInstance());
+        fragments.add(ConsultFagment.getInstance());
+        fragments.add(MineFragment.getInstance());
         ArrayList<Integer> integers = new ArrayList<>();
         integers.add(R.drawable.ic_insert_chart_black_24dp);
         integers.add(R.drawable.ic_home_black_24dp);
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MainAdapter(getSupportFragmentManager(), fragments, integers, titles, this);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(3);
         //循环添加图片
         addlayout(titles);
     }

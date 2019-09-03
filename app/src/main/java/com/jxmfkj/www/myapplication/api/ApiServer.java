@@ -72,7 +72,7 @@ public interface ApiServer {
      */
     @FormUrlEncoded
     @POST("/user/register")
-    Observable<BaseResponse> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
+    Observable<RegisterEntity> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
 
     @FormUrlEncoded
     @POST("/user/login")

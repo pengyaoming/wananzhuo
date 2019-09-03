@@ -1,5 +1,6 @@
 package com.jxmfkj.www.myapplication.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,6 +51,13 @@ public class HomeFragment extends Fragment {
     private List<Integer> entity = new ArrayList<>();
     private HomeAdapter adapter;
     private NewsTitlesAdapter mAdapter;
+    private Fragment fragment;
+
+
+    public static HomeFragment getInstance() {
+        HomeFragment fragment = new HomeFragment();
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -59,22 +68,21 @@ public class HomeFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        initClick();
     }
 
-    private void initClick() {
-
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            LozyLoad();
+        }
     }
 
-
-    private void initView() {
-        viewPager.setOffscreenPageLimit(3);
-        //获取公众号数据
+    private void LozyLoad() {
         RetrofitUitl.getInstance().Api()
                 .getChapters()
                 .subscribeOn(Schedulers.io())
@@ -82,41 +90,46 @@ public class HomeFragment extends Fragment {
                 .subscribe(new Observer<BaseResponse<List<SwEntity>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
                     public void onNext(BaseResponse<List<SwEntity>> listBaseResponse) {
                         if (listBaseResponse.getCode() != 0) {
-                            Toast.makeText(getActivity(), "数据错误", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), listBaseResponse.getMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
+                            list.clear();
+                            entity.clear();
                             for (int i = 0; i < listBaseResponse.getData().size(); i++) {
                                 list.add(listBaseResponse.getData().get(i).getName());
                                 entity.add(listBaseResponse.getData().get(i).getId());
                             }
-                            mAdapter.getAll().clear();
                             mAdapter.setData(list);
-                            initFragment();
+                            isFragment(entity);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
                     }
 
                     @Override
                     public void onComplete() {
-
                     }
                 });
 
-        initTab();
     }
 
-    private void initTab() {
-        CommonNavigator commonNavigator = new CommonNavigator(getContext());
+    private void initView() {
+        LozyLoad();
+        viewPager.setOffscreenPageLimit(3);
+        initAdapter(getChildFragmentManager());
+        initTab(getContext());
+    }
+
+
+    private void initTab(Context context) {
+        CommonNavigator commonNavigator = new CommonNavigator(context);
         mAdapter = new NewsTitlesAdapter();
         mAdapter.setOnItemClickListener(new NewsTitlesAdapter.OnItemClickListener() {
             @Override
@@ -127,22 +140,27 @@ public class HomeFragment extends Fragment {
         commonNavigator.setAdapter(mAdapter);
         magicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(magicIndicator, viewPager);
+
     }
 
-    private void initFragment() {
-        List<Fragment> entitls = new ArrayList<>();
-        adapter = new HomeAdapter(getFragmentManager(), entitls);
-        for (int i = 0; i < entity.size(); i++) {
-            Fragment fragment = null;
-            if (!TextUtils.isEmpty(list.get(i))) {
-                fragment = NewsFragment.getInstance(entity.get(i));
-            }
-            if (fragment != null) {
-                entitls.add(fragment);
-            }
-        }
-        adapter.setData(entitls);
+    private void initAdapter(FragmentManager childFragmentManager) {
+        List<Fragment> fragments = new ArrayList<>();
+        adapter = new HomeAdapter(childFragmentManager, fragments);
         viewPager.setAdapter(adapter);
     }
+
+    private void isFragment(List<Integer> list) {
+        List<String> entitls = mAdapter.getAll();
+        List<Fragment> fragments = new ArrayList<>();
+        for (int i = 0; i < entitls.size(); i++) {
+            fragment = NewsFragment.getInstance(entity.get(i));
+            if (fragment != null) {
+                fragments.add(fragment);
+            }
+        }
+        adapter.setData(fragments);
+
+    }
+
 
 }

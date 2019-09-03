@@ -21,11 +21,8 @@ public class MineFragment extends Fragment {
         return v;
     }
 
-    public static MineFragment getInstance(int id) {
+    public static MineFragment getInstance() {
         MineFragment fragment = new MineFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", id);
-        fragment.setArguments(bundle);
         return fragment;
     }
 

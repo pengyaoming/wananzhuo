@@ -1,5 +1,6 @@
 package com.jxmfkj.www.myapplication.ui.home;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,6 @@ import java.util.List;
 
 public class HomeAdapter extends FragmentStatePagerAdapter {
     protected List<Fragment> fragments;
-
 
 
     public HomeAdapter(FragmentManager fm, List<Fragment> fragments) {
@@ -31,8 +31,10 @@ public class HomeAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    @Nullable
-
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
 
     public List<Fragment> getAll() {
         return fragments;
