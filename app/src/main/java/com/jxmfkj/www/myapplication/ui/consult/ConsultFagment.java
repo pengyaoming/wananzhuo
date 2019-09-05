@@ -77,6 +77,7 @@ public class ConsultFagment extends Fragment {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(getActivity(), WebViewActivity.class);
                 intent.putExtra("url", mAdapter.getItem(position).getLink());
+                intent.putExtra("name", mAdapter.getItem(position).getTitle());
                 startActivity(intent);
             }
         });

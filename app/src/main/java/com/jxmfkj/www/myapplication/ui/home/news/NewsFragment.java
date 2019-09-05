@@ -1,5 +1,6 @@
 package com.jxmfkj.www.myapplication.ui.home.news;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import com.jxmfkj.www.myapplication.Entity.NewsEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.ui.WebViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,20 @@ public class NewsFragment extends Fragment {
         adapter = new NewsAdapter();
         initRetrofit(false);
         initView();
+        onClick();
+    }
+
+    private void onClick() {
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", NewsFragment.this.adapter.getItem(position).getLink());
+                intent.putExtra("name", NewsFragment.this.adapter.getItem(position).getTitle());
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void initRetrofit(boolean is) {
