@@ -74,14 +74,6 @@ public class HomeFragment extends Fragment {
         initView();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            LozyLoad();
-        }
-    }
-
     private void LozyLoad() {
         RetrofitUitl.getInstance().Api()
                 .getChapters()
@@ -105,7 +97,7 @@ public class HomeFragment extends Fragment {
                                 entity.add(listBaseResponse.getData().get(i).getId());
                             }
                             mAdapter.setData(list);
-                            isFragment(entity);
+                            isFragment();
                         }
                     }
 
@@ -149,7 +141,7 @@ public class HomeFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
-    private void isFragment(List<Integer> list) {
+    private void isFragment() {
         List<String> entitls = mAdapter.getAll();
         List<Fragment> fragments = new ArrayList<>();
         for (int i = 0; i < entitls.size(); i++) {

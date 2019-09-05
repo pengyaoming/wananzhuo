@@ -65,12 +65,12 @@ public class ConsultFagment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        loadData(false);
         initView();
-        initBanner();
-        initData();
         onClick();
     }
 
+    //点击事件
     private void onClick() {
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -83,10 +83,11 @@ public class ConsultFagment extends Fragment {
         });
     }
 
-
+    //初始化数据
     private void initView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ConsultAdapter();
+        initBanner();
         swipeRefreshLayout.setColorSchemeColors(Color.BLACK, Color.GREEN, Color.RED, Color.YELLOW, Color.BLUE);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         //下拉刷新
@@ -106,8 +107,10 @@ public class ConsultFagment extends Fragment {
 
         //上拉加载
         isFeish();
+        recyclerView.setAdapter(mAdapter);
     }
 
+    //获取banner
     private void initBanner() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_banner, (ViewGroup) recyclerView.getParent(), false);
         final Banner banner = view.findViewById(R.id.banner);
@@ -135,7 +138,7 @@ public class ConsultFagment extends Fragment {
                             }
                             banner.setImages(images).setBannerTitles(titles).setDelayTime(3000).isAutoPlay(true).start();
                         }
-                        recyclerView.setAdapter(mAdapter);
+
                     }
 
                     @Override
@@ -151,12 +154,7 @@ public class ConsultFagment extends Fragment {
         mAdapter.addHeaderView(view);
     }
 
-    private void initData() {
-        loadData(false);
-        recyclerView.setAdapter(mAdapter);
-
-    }
-
+    //获取首页数据
     private void loadData(boolean isFish) {
         if (!isFish) {
             page = 0;
@@ -190,7 +188,7 @@ public class ConsultFagment extends Fragment {
                 });
     }
 
-
+    //上啦加载
     private void isFeish() {
         mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override

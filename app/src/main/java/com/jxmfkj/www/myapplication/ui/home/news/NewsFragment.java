@@ -146,11 +146,7 @@ public class NewsFragment extends Fragment {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        initRetrofit(true);
-    }
+
 
 
     private void isFish() {

@@ -5,6 +5,7 @@ import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
+import com.jxmfkj.www.myapplication.Entity.LoginEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
@@ -76,7 +77,7 @@ public interface ApiServer {
 
     @FormUrlEncoded
     @POST("/user/login")
-    Observable<RegisterEntity> getLogin(@Field("username") String username, @Field("password") String password);
+    Observable<BaseResponse<LoginEntity>> getLogin(@Field("username") String username, @Field("password") String password);
 
 
     @GET("/banner/json")

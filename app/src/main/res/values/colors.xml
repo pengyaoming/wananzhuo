@@ -8,4 +8,6 @@
     <color name="black">#000000</color>
     <color name="news_top_tab_text_color">#676767</color>
     <color name="IcIcon">#ca1720</color>
+    <color name="yelou">#0F99DA</color>
+    <color name="xuColor">#e5e5e5</color>
 </resources>

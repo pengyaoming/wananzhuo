@@ -15,6 +15,7 @@ import com.jxmfkj.www.myapplication.ui.home.HomeFragment;
 import com.jxmfkj.www.myapplication.ui.mine.MineFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,19 +38,21 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         viewPager = findViewById(R.id.viewPage);
         tabLayout = findViewById(R.id.tablayout);
-        ArrayList<String> titles = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
         titles.add("公众号");
         titles.add("首页");
         titles.add("我的");
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        List<Fragment> fragments = new ArrayList<>();
         fragments.add(HomeFragment.getInstance());
         fragments.add(ConsultFagment.getInstance());
         fragments.add(MineFragment.getInstance());
-        ArrayList<Integer> integers = new ArrayList<>();
+
+        List<Integer> integers = new ArrayList<>();
         integers.add(R.drawable.ic_insert_chart_black_24dp);
         integers.add(R.drawable.ic_home_black_24dp);
         integers.add(R.drawable.ic_mine);
-        adapter = new MainAdapter(getSupportFragmentManager(), fragments, integers, titles, this);
+        adapter = new MainAdapter(getSupportFragmentManager(), integers, titles, this);
+        adapter.setData(fragments);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         addlayout(titles);
     }
 
-    private void addlayout(ArrayList<String> titles) {
+    private void addlayout(List<String> titles) {
         for (int i = 0; i < titles.size(); i++) {
             tabLayout.getTabAt(i).setText(titles.get(i));
         }
