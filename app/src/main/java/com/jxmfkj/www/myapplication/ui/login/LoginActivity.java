@@ -98,14 +98,20 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, registerEntity.getMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
+                            int id = registerEntity.getData().getId();
                             SharedPreferences sharedPreferences = getSharedPreferences("sp", MODE_PRIVATE);
                             SharedPreferences.Editor edit = sharedPreferences.edit();
                             edit.putString("name", registerEntity.getData().getNickname());
                             edit.putInt("id", registerEntity.getData().getId());
                             edit.commit();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
+                            Intent data = new Intent();
+                            data.putExtra("linkId", id);
+                            data.putExtra("name", registerEntity.getData().getNickname());
+
+                            setResult(15, data);
+//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     }
 

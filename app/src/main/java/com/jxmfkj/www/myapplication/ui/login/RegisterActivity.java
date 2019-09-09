@@ -74,8 +74,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toast.makeText(RegisterActivity.this, registerEntityBaseResponse.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
-                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                            Toast.makeText(RegisterActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }

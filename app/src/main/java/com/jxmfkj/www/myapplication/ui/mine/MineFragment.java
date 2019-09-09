@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.LoginEntity;
 import com.jxmfkj.www.myapplication.Entity.MineEntity;
 import com.jxmfkj.www.myapplication.R;
+import com.jxmfkj.www.myapplication.ui.login.LoginActivity;
 import com.jxmfkj.www.myapplication.ui.mine.collection.CollectionActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,17 +64,29 @@ public class MineFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
+        initClick();
 
     }
 
-    private void initView() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sp", MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "null");
-        int id = sharedPreferences.getInt("id", 0);
-        tvName.setText(name + "");
-        tvId.setText(id + "");
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    private void initClick() {
+        user_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(tvName.getText()) && TextUtils.isEmpty(tvId.getText())) {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivityForResult(intent, 200);
+                }
+            }
+        });
+    }
 
+    private void initView() {
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sp", MODE_PRIVATE);
+//        String name = sharedPreferences.getString("name", "null");
+//        int id = sharedPreferences.getInt("id", 0);
+//        tvName.setText(name + "");
+//        tvId.setText(id + "");
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         final List<MineEntity> list = new ArrayList<>();
         list.add(new MineEntity("收藏", R.drawable.ic_collections_black_24dp));
         list.add(new MineEntity("稍后阅读", R.drawable.ic_chrome_reader_mode_black_24dp));
@@ -88,7 +104,18 @@ public class MineFragment extends Fragment {
                 }
             }
         });
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 15) {
+            if (requestCode == 200) {
+                int id = data.getIntExtra("linkId", 0);
+                String name = data.getStringExtra("name");
+                tvName.setText(name + "");
+                tvId.setText(id + "");
+            }
+        }
+    }
 }

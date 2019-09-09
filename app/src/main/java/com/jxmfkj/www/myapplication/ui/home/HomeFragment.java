@@ -2,6 +2,7 @@ package com.jxmfkj.www.myapplication.ui.home;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,14 +18,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
+import com.jxmfkj.www.myapplication.MainActivity;
 import com.jxmfkj.www.myapplication.R;
+import com.jxmfkj.www.myapplication.adapter.MainAdapter;
 import com.jxmfkj.www.myapplication.adapter.NewsTitlesAdapter;
 import com.jxmfkj.www.myapplication.api.RetrofitUitl;
 import com.jxmfkj.www.myapplication.ui.home.news.NewsFragment;
+import com.jxmfkj.www.myapplication.ui.home.search.SearchActivity;
 import com.jxmfkj.www.myapplication.ui.mine.MineFragment;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -52,6 +57,7 @@ public class HomeFragment extends Fragment {
     private HomeAdapter adapter;
     private NewsTitlesAdapter mAdapter;
     private Fragment fragment;
+    private ImageView search_img;
 
 
     public static HomeFragment getInstance() {
@@ -65,6 +71,7 @@ public class HomeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_home, null, false);
         magicIndicator = v.findViewById(R.id.MagicIndicator);
         viewPager = v.findViewById(R.id.viewPager);
+        search_img = v.findViewById(R.id.search_img);
         return v;
     }
 
@@ -72,6 +79,17 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
+        onClick();
+    }
+
+    private void onClick() {
+        search_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
+
     }
 
     private void LozyLoad() {

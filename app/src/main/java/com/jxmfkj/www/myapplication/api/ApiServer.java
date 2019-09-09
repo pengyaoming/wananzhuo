@@ -9,6 +9,8 @@ import com.jxmfkj.www.myapplication.Entity.LoginEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
+import com.jxmfkj.www.myapplication.Entity.SearchEntity;
+import com.jxmfkj.www.myapplication.Entity.SearchListEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
@@ -23,6 +25,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 
 public interface ApiServer {
@@ -85,6 +88,26 @@ public interface ApiServer {
 
     @GET("/article/list/{page}/json")
     Observable<BaseResponse<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
+
+    /**
+     * 收藏文章
+     *
+     * @param id
+     * @return
+     */
+    @POST("/lg/collect/{id}/json")
+    Observable<BaseResponse> getCollect(@Path("id") String id);
+
+    /**
+     * 搜索
+     *
+     * @param page
+     * @param K
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("/article/query/{page}/json")
+    Observable<BaseResponse<SearchEntity<List<SearchListEntity>>>> getSearch(@Path("page") String page, @Field("k") String K);
 
 
 }

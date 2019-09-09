@@ -41,6 +41,7 @@ public class NewsFragment extends Fragment {
     private NewsAdapter adapter;
     private int pageSize = 20;
     private boolean isErr = false;
+    private boolean collection = false;
 
 
     @Nullable
@@ -71,6 +72,12 @@ public class NewsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+            }
+        });
 
     }
 
@@ -85,7 +92,6 @@ public class NewsFragment extends Fragment {
                 .subscribe(new Observer<BaseResponse<NewsWEntity<List<NewsEntity>>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
@@ -97,17 +103,13 @@ public class NewsFragment extends Fragment {
                             adapter.addData(newsWEntityBaseResponse.getData().getDatas());
                             pageSize = newsWEntityBaseResponse.getData().getDatas().size();
                         }
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
-
                     }
 
                     @Override
                     public void onComplete() {
-
                     }
                 });
     }
@@ -145,8 +147,6 @@ public class NewsFragment extends Fragment {
         isFish();
 
     }
-
-
 
 
     private void isFish() {
