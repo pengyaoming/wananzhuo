@@ -1,14 +1,11 @@
 package com.jxmfkj.www.myapplication.ui.home.search;
 
-import android.support.annotation.Nullable;
 import android.text.Html;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.jxmfkj.www.myapplication.Entity.SearchListEntity;
 import com.jxmfkj.www.myapplication.R;
-
-import java.util.List;
 
 public class SearchAdapter extends BaseQuickAdapter<SearchListEntity, BaseViewHolder> {
     public SearchAdapter() {

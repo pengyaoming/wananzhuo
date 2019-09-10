@@ -11,6 +11,7 @@ import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.Entity.SearchEntity;
 import com.jxmfkj.www.myapplication.Entity.SearchListEntity;
+import com.jxmfkj.www.myapplication.Entity.SystemEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
@@ -110,4 +111,6 @@ public interface ApiServer {
     Observable<BaseResponse<SearchEntity<List<SearchListEntity>>>> getSearch(@Path("page") String page, @Field("k") String K);
 
 
+    @GET("/tree/json")
+    Observable<BaseResponse<List<SystemEntity>>> getSystem();
 }

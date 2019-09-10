@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/liner"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:backgroundTint="@color/white">
+
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/left_img"
@@ -20,9 +22,11 @@
         android:layout_weight="1" />
 
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textColor="@color/white"
+        android:gravity="center"
         android:textSize="18sp" />
 
     <View
