@@ -17,6 +17,7 @@ import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.adapter.HistoryAdapter;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * 公众号历史记录
  */
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends RxAppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;

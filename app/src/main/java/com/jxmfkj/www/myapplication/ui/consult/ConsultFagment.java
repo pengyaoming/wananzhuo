@@ -2,12 +2,10 @@ package com.jxmfkj.www.myapplication.ui.consult;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +22,10 @@ import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
-import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.api.RetrofitUtil;
 import com.jxmfkj.www.myapplication.ui.WebViewActivity;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 import com.youth.banner.Banner;
-import com.youth.banner.loader.ImageLoaderInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +34,11 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-public class ConsultFagment extends Fragment {
+/**
+ * 首页
+ * @author peng
+ */
+public class ConsultFagment extends RxFragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<ConsultEntity> uris;
@@ -115,7 +116,7 @@ public class ConsultFagment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_banner, (ViewGroup) recyclerView.getParent(), false);
         final Banner banner = view.findViewById(R.id.banner);
         banner.setImageLoader(new GlideImageLoader());
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(getContext()).create(ApiServer.class)
                 .getBanner()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -158,8 +159,10 @@ public class ConsultFagment extends Fragment {
     private void loadData(boolean isFish) {
         if (!isFish) {
             page = 0;
+            Top();
         }
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(getContext())
+                .create(ApiServer.class)
                 .getConsult(page + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -216,4 +219,38 @@ public class ConsultFagment extends Fragment {
         }, recyclerView);
     }
 
+    /**
+     * 获取顶部数据
+     */
+    public void Top() {
+        RetrofitUtil.getInstance(getContext()).create(ApiServer.class)
+                .getTop()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BaseResponse<List<ConsultEntity>>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(BaseResponse<List<ConsultEntity>> listBaseResponse) {
+                        if (listBaseResponse.getCode() != 0) {
+                            Toast.makeText(getActivity(), listBaseResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        mAdapter.addData(listBaseResponse.getData());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 }

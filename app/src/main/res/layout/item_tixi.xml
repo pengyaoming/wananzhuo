@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="Android相关"
         android:background="@drawable/system_back"
         android:padding="5dp" />
 

@@ -2,6 +2,7 @@ package com.jxmfkj.www.myapplication.api;
 
 import com.jxmfkj.www.myapplication.Entity.BannerEntity;
 import com.jxmfkj.www.myapplication.Entity.BaseResponse;
+import com.jxmfkj.www.myapplication.Entity.CollectionEntity;
 import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.Entity.HistoryEntity;
@@ -11,11 +12,10 @@ import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
 import com.jxmfkj.www.myapplication.Entity.SearchEntity;
 import com.jxmfkj.www.myapplication.Entity.SearchListEntity;
+import com.jxmfkj.www.myapplication.Entity.SwEntity;
 import com.jxmfkj.www.myapplication.Entity.SystemEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
-import com.jxmfkj.www.myapplication.Entity.SwEntity;
-
 
 import java.util.List;
 
@@ -113,4 +113,30 @@ public interface ApiServer {
 
     @GET("/tree/json")
     Observable<BaseResponse<List<SystemEntity>>> getSystem();
+
+    /**
+     * 置顶数据
+     *
+     * @return
+     */
+    @GET("/article/top/json")
+    Observable<BaseResponse<List<ConsultEntity>>> getTop();
+
+    /**
+     * 体系列表文章
+     *
+     * @param page
+     * @param cid
+     * @return
+     */
+    @GET("/article/list/{page}/json")
+    Observable<BaseResponse<SearchEntity<List<NewsEntity>>>> getArtcle(@Path("page") String page, @Query("cid") String cid);
+
+    /**
+     * 收藏列表
+     * @param page
+     * @return
+     */
+    @GET("/lg/collect/list/{page}/json")
+    Observable<BaseResponse<SearchEntity<List<CollectionEntity>>>> getCollection(@Path("page") String page);
 }

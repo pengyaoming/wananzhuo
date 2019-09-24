@@ -14,7 +14,6 @@ public class SystemEntity {
      * userControlSetTop : false
      * visible : 1
      */
-
     private int courseId;
     private int id;
     private String name;

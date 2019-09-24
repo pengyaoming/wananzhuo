@@ -33,6 +33,10 @@
             android:name=".ui.mine.collection.CollectionActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"></activity>
         <activity android:name=".ui.home.search.SearchActivity" />
+        <activity
+            android:name=".ui.tixi.article.ArtcleActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"></activity>
+
     </application>
 
 

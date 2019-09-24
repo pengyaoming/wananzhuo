@@ -1,10 +1,9 @@
 package com.jxmfkj.www.myapplication.ui.tixi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.internal.FlowLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.SystemEntity;
 import com.jxmfkj.www.myapplication.R;
-import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.api.ApiServer;
+import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.ui.tixi.article.ArtcleActivity;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.List;
 
@@ -26,11 +29,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class TiXiFragment extends Fragment {
+/**
+ * 体系
+ */
+public class TiXiFragment extends RxFragment {
     TextView tv_title;
     RecyclerView recyclerView;
     SystemAdapter adapter;
     LinearLayout linearLayout;
+    private TiXiAdapter mAdapter;
 
     @Nullable
     @Override
@@ -47,11 +54,13 @@ public class TiXiFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
         initData();
+        initOnClick();
     }
 
 
@@ -59,13 +68,14 @@ public class TiXiFragment extends Fragment {
         tv_title.setText("体系");
         tv_title.setTextColor(getResources().getColor(R.color.white));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new SystemAdapter();
+        adapter = new SystemAdapter(getContext());
         recyclerView.setAdapter(adapter);
         linearLayout.setBackgroundColor(getResources().getColor(R.color.IcIcon));
     }
 
     private void initData() {
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(getContext())
+                .create(ApiServer.class)
                 .getSystem().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BaseResponse<List<SystemEntity>>>() {
@@ -94,6 +104,10 @@ public class TiXiFragment extends Fragment {
 
                     }
                 });
-
+    }
+    /*
+    点击跳转
+     */
+    private void initOnClick() {
     }
 }

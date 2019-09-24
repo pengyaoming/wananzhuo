@@ -18,7 +18,9 @@
             android:background="@drawable/search_back"
             android:layout_margin="5dp"
             android:layout_marginRight="5dp"
-            android:paddingLeft="10dp" />
+            android:paddingLeft="10dp"
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/click_img"

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,30 +17,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.jxmfkj.www.myapplication.Entity.LoginEntity;
 import com.jxmfkj.www.myapplication.Entity.MineEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.ui.login.LoginActivity;
 import com.jxmfkj.www.myapplication.ui.mine.collection.CollectionActivity;
-
-import org.w3c.dom.Text;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
-public class MineFragment extends Fragment {
-    private int id;
-    private LoginEntity entity;
+/**
+ * 我的
+ * @author peng
+ */
+public class MineFragment extends RxFragment {
     private LinearLayout liner;
     private ImageView user_img;
     private TextView tvName;
     private TextView tvId;
     private RecyclerView recyclerView;
     private MineAdapter adapter;
-    private MineEntity cssa;
 
     @Nullable
     @Override
@@ -65,6 +62,11 @@ public class MineFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initView();
         initClick();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
     }
 
@@ -79,13 +81,14 @@ public class MineFragment extends Fragment {
             }
         });
     }
-
     private void initView() {
-//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sp", MODE_PRIVATE);
-//        String name = sharedPreferences.getString("name", "null");
-//        int id = sharedPreferences.getInt("id", 0);
-//        tvName.setText(name + "");
-//        tvId.setText(id + "");
+        SharedPreferences sp = getContext().getSharedPreferences("cookie_prefs", MODE_PRIVATE);
+        String username = sp.getString("name", "");
+        String id = sp.getString("id", "");
+        if (!TextUtils.isEmpty(id)) {
+            tvName.setText(username);
+            tvId.setText(id);
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         final List<MineEntity> list = new ArrayList<>();
         list.add(new MineEntity("收藏", R.drawable.ic_collections_black_24dp));
@@ -104,6 +107,7 @@ public class MineFragment extends Fragment {
                 }
             }
         });
+
     }
 
     @Override

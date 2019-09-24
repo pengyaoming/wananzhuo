@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,19 +20,24 @@ import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.NewsEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.R;
-import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.api.ApiServer;
+import com.jxmfkj.www.myapplication.api.RetrofitUtil;
 import com.jxmfkj.www.myapplication.ui.WebViewActivity;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class NewsFragment extends Fragment {
+/**
+ * 公众号列表
+ * @author peng
+ */
+public class NewsFragment extends RxFragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int id;
@@ -84,8 +88,10 @@ public class NewsFragment extends Fragment {
     private void initRetrofit(boolean is) {
         if (!is) {
             page = 0;
+
         }
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(getContext())
+                .create(ApiServer.class)
                 .getArticle(getArguments().getInt("id", id) + "", page + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,6 +110,7 @@ public class NewsFragment extends Fragment {
                             pageSize = newsWEntityBaseResponse.getData().getDatas().size();
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                     }
@@ -121,7 +128,6 @@ public class NewsFragment extends Fragment {
         fragment.setArguments(bundle);
         return fragment;
     }
-
     private void initView() {
         adapter = new NewsAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -145,10 +151,7 @@ public class NewsFragment extends Fragment {
             }
         });
         isFish();
-
     }
-
-
     private void isFish() {
         adapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
@@ -174,6 +177,5 @@ public class NewsFragment extends Fragment {
                 }, 500);
             }
         }, recyclerView);
-
     }
 }

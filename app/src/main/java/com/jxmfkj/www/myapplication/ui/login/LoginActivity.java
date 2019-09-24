@@ -2,7 +2,6 @@ package com.jxmfkj.www.myapplication.ui.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,19 +12,20 @@ import android.widget.Toast;
 
 import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.LoginEntity;
-import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
-import com.jxmfkj.www.myapplication.MainActivity;
 import com.jxmfkj.www.myapplication.R;
-import com.jxmfkj.www.myapplication.api.RetrofitUitl;
-
+import com.jxmfkj.www.myapplication.api.ApiServer;
+import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
-public class LoginActivity extends AppCompatActivity {
+/**
+ * 登录
+ */
+public class LoginActivity extends RxAppCompatActivity {
     private EditText edtAccount;
     private EditText edtPassword;
     private TextView tvClick;
@@ -82,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "账号或密码不能小于6位数", Toast.LENGTH_SHORT).show();
             return;
         }
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(this)
+                .create(ApiServer.class)
                 .getLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

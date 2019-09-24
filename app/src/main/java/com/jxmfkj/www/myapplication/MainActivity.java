@@ -14,6 +14,7 @@ import com.jxmfkj.www.myapplication.ui.consult.ConsultFagment;
 import com.jxmfkj.www.myapplication.ui.home.HomeFragment;
 import com.jxmfkj.www.myapplication.ui.mine.MineFragment;
 import com.jxmfkj.www.myapplication.ui.tixi.TiXiFragment;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RxAppCompatActivity {
 
     private ViewPager viewPager;
 

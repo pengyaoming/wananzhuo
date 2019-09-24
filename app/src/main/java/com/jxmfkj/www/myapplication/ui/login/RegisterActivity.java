@@ -3,7 +3,6 @@ package com.jxmfkj.www.myapplication.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -11,16 +10,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jxmfkj.www.myapplication.Entity.RegisterEntity;
-import com.jxmfkj.www.myapplication.MainActivity;
 import com.jxmfkj.www.myapplication.R;
-import com.jxmfkj.www.myapplication.api.RetrofitUitl;
+import com.jxmfkj.www.myapplication.api.ApiServer;
+import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+/**
+ * 注册
+ */
+public class RegisterActivity extends RxAppCompatActivity implements View.OnClickListener {
     private EditText edtAccount, edtPassword, edtRepassword;
     private TextView tvRegister;
 
@@ -59,7 +62,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        RetrofitUitl.getInstance().Api()
+        RetrofitUtil.getInstance(this)
+                .create(ApiServer.class)
                 .getRegister(username, password, repassword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

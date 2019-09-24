@@ -23,8 +23,6 @@ import com.jxmfkj.www.myapplication.R;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
 public class WebViewActivity extends AppCompatActivity implements View.OnClickListener {
-    public AgentWeb agentWeb;
-    public LinearLayout web;
     public View view;
     public WebView webView;
     private ImageView image;
@@ -52,7 +50,6 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 return true;
             }
         });
-
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -70,6 +67,5 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
         }
-
     }
 }

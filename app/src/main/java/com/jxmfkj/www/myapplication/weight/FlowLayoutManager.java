@@ -1,4 +1,4 @@
-package com.jxmfkj.www.myapplication.ui.tixi;
+package com.jxmfkj.www.myapplication.weight;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

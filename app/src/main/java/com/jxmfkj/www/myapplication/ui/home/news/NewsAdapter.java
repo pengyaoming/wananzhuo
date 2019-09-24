@@ -20,14 +20,15 @@ public class NewsAdapter extends BaseQuickAdapter<NewsEntity, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, NewsEntity item) {
+
         TextView title = helper.getView(R.id.tvTitle);
         title.setText(item.getTitle());
         helper.setText(R.id.tvTime, item.getNiceDate());
         helper.setText(R.id.tvName, item.getChapterName());
         helper.setText(R.id.tvSource, item.getSuperChapterName());
-        helper.addOnClickListener(R.id.collection_img)
-                .setImageResource(R.id.collection_img, R.drawable.ic_heart_se);
+
     }
+
 
 
 }
