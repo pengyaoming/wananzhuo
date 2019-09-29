@@ -30,6 +30,7 @@ public class TiXiAdapter extends BaseQuickAdapter<SystemEntity.ChildrenBean, Bas
             public void onClick(View v) {
                 Intent intent = new Intent(context, ArtcleActivity.class);
                 intent.putExtra("id", item.getId());
+                intent.putExtra("name", item.getName());
                 context.startActivity(intent);
             }
         });

@@ -1,7 +1,6 @@
 package com.jxmfkj.www.myapplication.api;
 
 import com.jxmfkj.www.myapplication.Entity.BannerEntity;
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.CollectionEntity;
 import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
@@ -16,6 +15,7 @@ import com.jxmfkj.www.myapplication.Entity.SwEntity;
 import com.jxmfkj.www.myapplication.Entity.SystemEntity;
 import com.jxmfkj.www.myapplication.Entity.ThereEntity;
 import com.jxmfkj.www.myapplication.Entity.Translation1;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
 
 import java.util.List;
 
@@ -24,6 +24,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -65,10 +66,10 @@ public interface ApiServer {
      * @return
      */
     @GET("/wxarticle/chapters/json")
-    Observable<BaseResponse<List<SwEntity>>> getChapters();
+    Observable<BaseEntity<List<SwEntity>>> getChapters();
 
     @GET("wxarticle/list/{id}/{page}/json")
-    Observable<BaseResponse<NewsWEntity<List<NewsEntity>>>> getArticle(@Path("id") String id, @Path("page") String page);
+    Observable<BaseEntity<NewsWEntity<List<NewsEntity>>>> getArticle(@Path("id") String id, @Path("page") String page);
 
     /**
      * 注册接口
@@ -81,14 +82,13 @@ public interface ApiServer {
 
     @FormUrlEncoded
     @POST("/user/login")
-    Observable<BaseResponse<LoginEntity>> getLogin(@Field("username") String username, @Field("password") String password);
-
+    Observable<BaseEntity<LoginEntity>> getLogin(@Field("username") String username, @Field("password") String password);
 
     @GET("/banner/json")
-    Observable<BaseResponse<List<BannerEntity>>> getBanner();
+    Observable<BaseEntity<List<BannerEntity>>> getBanner();
 
     @GET("/article/list/{page}/json")
-    Observable<BaseResponse<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
+    Observable<BaseEntity<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
 
     /**
      * 收藏文章
@@ -97,7 +97,7 @@ public interface ApiServer {
      * @return
      */
     @POST("/lg/collect/{id}/json")
-    Observable<BaseResponse> getCollect(@Path("id") String id);
+    Observable<BaseEntity> getCollect(@Path("id") String id);
 
     /**
      * 搜索
@@ -108,11 +108,11 @@ public interface ApiServer {
      */
     @FormUrlEncoded
     @POST("/article/query/{page}/json")
-    Observable<BaseResponse<SearchEntity<List<SearchListEntity>>>> getSearch(@Path("page") String page, @Field("k") String K);
+    Observable<BaseEntity<SearchEntity<List<SearchListEntity>>>> getSearch(@Path("page") String page, @Field("k") String K);
 
 
     @GET("/tree/json")
-    Observable<BaseResponse<List<SystemEntity>>> getSystem();
+    Observable<BaseEntity<List<SystemEntity>>> getSystem();
 
     /**
      * 置顶数据
@@ -120,7 +120,7 @@ public interface ApiServer {
      * @return
      */
     @GET("/article/top/json")
-    Observable<BaseResponse<List<ConsultEntity>>> getTop();
+    Observable<BaseEntity<List<ConsultEntity>>> getTop();
 
     /**
      * 体系列表文章
@@ -130,13 +130,18 @@ public interface ApiServer {
      * @return
      */
     @GET("/article/list/{page}/json")
-    Observable<BaseResponse<SearchEntity<List<NewsEntity>>>> getArtcle(@Path("page") String page, @Query("cid") String cid);
+    Observable<BaseEntity<SearchEntity<List<NewsEntity>>>> getArtcle(@Path("page") String page, @Query("cid") String cid);
 
     /**
      * 收藏列表
+     *
      * @param page
      * @return
      */
     @GET("/lg/collect/list/{page}/json")
-    Observable<BaseResponse<SearchEntity<List<CollectionEntity>>>> getCollection(@Path("page") String page);
+    Observable<BaseEntity<SearchEntity<List<CollectionEntity>>>> getCollection( @Path("page") String page);
+
+    @POST("/lg/collect/{id}/json")
+    Observable<BaseEntity> getCilckCollection(@Path("id") String id);
+
 }

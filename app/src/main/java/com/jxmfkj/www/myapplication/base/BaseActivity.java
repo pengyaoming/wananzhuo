@@ -74,4 +74,5 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+
 }

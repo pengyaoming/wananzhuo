@@ -4,42 +4,39 @@ import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Toast;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.jxmfkj.www.myapplication.adapter.MainAdapter;
+import com.jxmfkj.www.myapplication.base.BaseActivity;
 import com.jxmfkj.www.myapplication.ui.consult.ConsultFagment;
 import com.jxmfkj.www.myapplication.ui.home.HomeFragment;
 import com.jxmfkj.www.myapplication.ui.mine.MineFragment;
 import com.jxmfkj.www.myapplication.ui.tixi.TiXiFragment;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class MainActivity extends RxAppCompatActivity {
-
-    private ViewPager viewPager;
-
-    private TabLayout tabLayout;
+public class MainActivity extends BaseActivity {
+    @BindView(R.id.viewPage)
+    ViewPager viewPager;
+    @BindView(R.id.tablayout)
+    TabLayout tabLayout;
     private long clickTime = 0;
     private MainAdapter adapter;
+    private int viwePageSize = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
+    public int getLayoutId() {
+        return R.layout.activity_main;
     }
 
-    private void initView() {
-        viewPager = findViewById(R.id.viewPage);
-        tabLayout = findViewById(R.id.tablayout);
+    @Override
+    public void initView() {
         List<String> titles = new ArrayList<>();
         titles.add("公众号");
         titles.add("体系");
@@ -62,6 +59,37 @@ public class MainActivity extends RxAppCompatActivity {
         viewPager.setOffscreenPageLimit(4);
         //循环添加图片
         addlayout(titles);
+    }
+
+    @Override
+    public void initData() {
+        //获取viewpage的数量
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                initState(i);
+                viwePageSize = i;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+    }
+
+    private void initState(int i) {
+        View view = findViewById(R.id.topView);
+        if (i == 3) {
+            view.setVisibility(View.GONE);
+            ImmersionBar.with(MainActivity.this).keyboardEnable(true).navigationBarColor(R.color.white).statusBarDarkFont(false).init();
+        } else {
+            view.setVisibility(View.VISIBLE);
+            ImmersionBar.with(MainActivity.this).keyboardEnable(true).statusBarView(view).navigationBarColor(R.color.white).statusBarDarkFont(true, 0.2f).init();
+        }
     }
 
     private void addlayout(List<String> titles) {

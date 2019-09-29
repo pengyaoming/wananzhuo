@@ -16,12 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.NewsEntity;
 import com.jxmfkj.www.myapplication.Entity.NewsWEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
 import com.jxmfkj.www.myapplication.ui.WebViewActivity;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
@@ -35,6 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * 公众号列表
+ *
  * @author peng
  */
 public class NewsFragment extends RxFragment {
@@ -95,19 +96,19 @@ public class NewsFragment extends RxFragment {
                 .getArticle(getArguments().getInt("id", id) + "", page + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<NewsWEntity<List<NewsEntity>>>>() {
+                .subscribe(new Observer<BaseEntity<NewsWEntity<List<NewsEntity>>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(BaseResponse<NewsWEntity<List<NewsEntity>>> newsWEntityBaseResponse) {
-                        if (newsWEntityBaseResponse.getCode() != 0) {
-                            Toast.makeText(getActivity(), "数据错误", Toast.LENGTH_SHORT).show();
+                    public void onNext(BaseEntity<NewsWEntity<List<NewsEntity>>> newsWEntityBaseEntity) {
+                        if (newsWEntityBaseEntity.getErrorCode() != 0) {
+                            Toast.makeText(getActivity(), newsWEntityBaseEntity.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
-                            adapter.addData(newsWEntityBaseResponse.getData().getDatas());
-                            pageSize = newsWEntityBaseResponse.getData().getDatas().size();
+                            adapter.addData(newsWEntityBaseEntity.getData().getDatas());
+                            pageSize = newsWEntityBaseEntity.getData().getDatas().size();
                         }
                     }
 
@@ -128,6 +129,7 @@ public class NewsFragment extends RxFragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
     private void initView() {
         adapter = new NewsAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -152,6 +154,7 @@ public class NewsFragment extends RxFragment {
         });
         isFish();
     }
+
     private void isFish() {
         adapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override

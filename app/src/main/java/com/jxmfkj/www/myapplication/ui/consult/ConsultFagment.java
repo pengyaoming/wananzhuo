@@ -17,14 +17,14 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jxmfkj.www.myapplication.Entity.BannerEntity;
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.ConsultEntity;
 import com.jxmfkj.www.myapplication.Entity.CssEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
+import com.jxmfkj.www.myapplication.base.BaseFragment;
 import com.jxmfkj.www.myapplication.ui.WebViewActivity;
-import com.trello.rxlifecycle2.components.support.RxFragment;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -34,11 +34,14 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+
 /**
  * 首页
+ *
  * @author peng
  */
-public class ConsultFagment extends RxFragment {
+public class ConsultFagment extends BaseFragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<ConsultEntity> uris;
@@ -66,29 +69,20 @@ public class ConsultFagment extends RxFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadData(false);
-        initView();
-        onClick();
+
+
     }
 
-    //点击事件
-    private void onClick() {
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                intent.putExtra("url", mAdapter.getItem(position).getLink());
-                intent.putExtra("name", mAdapter.getItem(position).getTitle());
-                startActivity(intent);
-            }
-        });
+    @Override
+    protected View initView() {
+        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_consult, null, false);
     }
 
-    //初始化数据
-    private void initView() {
+    @Override
+    protected void initData() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ConsultAdapter();
-        initBanner();
+        recyclerView.setAdapter(mAdapter);
         swipeRefreshLayout.setColorSchemeColors(Color.BLACK, Color.GREEN, Color.RED, Color.YELLOW, Color.BLUE);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         //下拉刷新
@@ -105,11 +99,65 @@ public class ConsultFagment extends RxFragment {
                 }, 1000);
             }
         });
-
+        loadData(false);
+        initBanner();
         //上拉加载
         isFeish();
-        recyclerView.setAdapter(mAdapter);
+        onClick();
+
     }
+
+    //点击事件
+    private void onClick() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("url", mAdapter.getItem(position).getLink());
+                intent.putExtra("name", mAdapter.getItem(position).getTitle());
+                startActivity(intent);
+            }
+        });
+        mAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.item_collection:
+                        int id = mAdapter.getItem(position).getId();
+                        Collection(id);
+                }
+            }
+        });
+    }
+
+    //点击收藏
+    private void Collection(int id) {
+        RetrofitUtil.getInstance(getContext()).create(ApiServer.class)
+                .getCilckCollection(id + "")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BaseEntity>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+
+                        if (baseEntity.getErrorCode() != 0) {
+                            showMessage(baseEntity.getErrorMsg());
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
+
 
     //获取banner
     private void initBanner() {
@@ -120,22 +168,22 @@ public class ConsultFagment extends RxFragment {
                 .getBanner()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<List<BannerEntity>>>() {
+                .subscribe(new Observer<BaseEntity<List<BannerEntity>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(BaseResponse<List<BannerEntity>> bannerEntityBaseResponse) {
-                        if (bannerEntityBaseResponse.getCode() != 0) {
+                    public void onNext(BaseEntity<List<BannerEntity>> bannerEntityBaseEntity) {
+                        if (bannerEntityBaseEntity.getErrorCode() != 0) {
                             Toast.makeText(getActivity(), "错误", Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             List<String> images = new ArrayList<>();
                             List<String> titles = new ArrayList<>();
-                            for (int i = 0; i < bannerEntityBaseResponse.getData().size(); i++) {
-                                images.add(bannerEntityBaseResponse.getData().get(i).getImagePath());
-                                titles.add(bannerEntityBaseResponse.getData().get(i).getTitle());
+                            for (int i = 0; i < bannerEntityBaseEntity.getData().size(); i++) {
+                                images.add(bannerEntityBaseEntity.getData().get(i).getImagePath());
+                                titles.add(bannerEntityBaseEntity.getData().get(i).getTitle());
                             }
                             banner.setImages(images).setBannerTitles(titles).setDelayTime(3000).isAutoPlay(true).start();
                         }
@@ -166,16 +214,16 @@ public class ConsultFagment extends RxFragment {
                 .getConsult(page + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<CssEntity<List<ConsultEntity>>>>() {
+                .subscribe(new Observer<BaseEntity<CssEntity<List<ConsultEntity>>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(BaseResponse<CssEntity<List<ConsultEntity>>> listBaseResponse) {
-                        mAdapter.addData(listBaseResponse.getData().getDatas());
-                        pageSize = listBaseResponse.getData().getDatas().size();
+                    public void onNext(BaseEntity<CssEntity<List<ConsultEntity>>> listBaseEntity) {
+                        mAdapter.addData(listBaseEntity.getData().getDatas());
+                        pageSize = listBaseEntity.getData().getDatas().size();
 
                     }
 
@@ -227,19 +275,19 @@ public class ConsultFagment extends RxFragment {
                 .getTop()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<List<ConsultEntity>>>() {
+                .subscribe(new Observer<BaseEntity<List<ConsultEntity>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(BaseResponse<List<ConsultEntity>> listBaseResponse) {
-                        if (listBaseResponse.getCode() != 0) {
-                            Toast.makeText(getActivity(), listBaseResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                    public void onNext(BaseEntity<List<ConsultEntity>> listBaseEntity) {
+                        if (listBaseEntity.getErrorCode() != 0) {
+                            Toast.makeText(getActivity(), listBaseEntity.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        mAdapter.addData(listBaseResponse.getData());
+                        mAdapter.addData(listBaseEntity.getData());
                     }
 
                     @Override

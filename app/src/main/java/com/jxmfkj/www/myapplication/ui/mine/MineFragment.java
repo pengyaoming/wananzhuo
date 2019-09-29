@@ -3,54 +3,63 @@ package com.jxmfkj.www.myapplication.ui.mine;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.jxmfkj.www.myapplication.Entity.MessageEvent;
 import com.jxmfkj.www.myapplication.Entity.MineEntity;
 import com.jxmfkj.www.myapplication.R;
+import com.jxmfkj.www.myapplication.base.BaseFragment;
 import com.jxmfkj.www.myapplication.ui.login.LoginActivity;
 import com.jxmfkj.www.myapplication.ui.mine.collection.CollectionActivity;
-import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.jxmfkj.www.myapplication.ui.mine.install.InstallActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 import static android.content.Context.MODE_PRIVATE;
 
 /**
  * 我的
+ *
  * @author peng
  */
-public class MineFragment extends RxFragment {
-    private LinearLayout liner;
-    private ImageView user_img;
-    private TextView tvName;
-    private TextView tvId;
-    private RecyclerView recyclerView;
+public class MineFragment extends BaseFragment {
+    @BindView(R.id.user_img)
+    ImageView user_img;
+    @BindView(R.id.tvId)
+    TextView tvId;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.linLogin)
+    LinearLayout linLogin;
+    @BindView(R.id.linId)
+    LinearLayout linId;
+    @BindView(R.id.linName)
+    LinearLayout linName;
     private MineAdapter adapter;
+    private final List<MineEntity> list = new ArrayList<>();
+    private boolean isErr = false;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_mine, container, false);
-        liner = v.findViewById(R.id.liner);
-        user_img = v.findViewById(R.id.user_img);
-        tvName = v.findViewById(R.id.tvName);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        tvId = v.findViewById(R.id.tvId);
-        return v;
-    }
 
     public static MineFragment getInstance() {
         MineFragment fragment = new MineFragment();
@@ -58,39 +67,16 @@ public class MineFragment extends RxFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        initView();
-        initClick();
+    protected View initView() {
+        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_mine, null, false);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    private void initClick() {
-        user_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(tvName.getText()) && TextUtils.isEmpty(tvId.getText())) {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    startActivityForResult(intent, 200);
-                }
-            }
-        });
-    }
-    private void initView() {
-        SharedPreferences sp = getContext().getSharedPreferences("cookie_prefs", MODE_PRIVATE);
-        String username = sp.getString("name", "");
-        String id = sp.getString("id", "");
-        if (!TextUtils.isEmpty(id)) {
-            tvName.setText(username);
-            tvId.setText(id);
-        }
+    protected void initData() {
+        linId.setVisibility(View.GONE);
+        linName.setVisibility(View.GONE);
+        linLogin.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final List<MineEntity> list = new ArrayList<>();
         list.add(new MineEntity("收藏", R.drawable.ic_collections_black_24dp));
         list.add(new MineEntity("稍后阅读", R.drawable.ic_chrome_reader_mode_black_24dp));
         list.add(new MineEntity("开源项目", R.drawable.ic_open_with_black_24dp));
@@ -99,15 +85,34 @@ public class MineFragment extends RxFragment {
         adapter = new MineAdapter(R.layout.item_sw, list);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                if (position == 0 && list.get(position).getName() == "收藏") {
-                    startActivity(new Intent(getActivity(), CollectionActivity.class));
-                }
-            }
-        });
+        SharedPreferences sp = getContext().getSharedPreferences("sp", MODE_PRIVATE);
+        String username = sp.getString("name", "");
+        int id = sp.getInt("id", 0);
+        if (!TextUtils.isEmpty(username)) {
+            tvName.setText(username + "");
+            tvId.setText(id + "");
+            isErr = true;
+            linId.setVisibility(View.VISIBLE);
+            linName.setVisibility(View.VISIBLE);
+            linLogin.setVisibility(View.GONE);
+        }
+        onClick();
+    }
 
+    @OnClick({R.id.user_img, R.id.linLogin, R.id.linId, R.id.linName})
+    public void OnClick(View view) {
+        switch (view.getId()) {
+            case R.id.user_img:
+                startActivityForResult(new Intent(getContext(), LoginActivity.class), 200);
+                break;
+            case R.id.linLogin:
+                startActivityForResult(new Intent(getContext(), LoginActivity.class), 200);
+                break;
+            case R.id.linId:
+                break;
+            case R.id.linName:
+                break;
+        }
     }
 
     @Override
@@ -115,11 +120,95 @@ public class MineFragment extends RxFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 15) {
             if (requestCode == 200) {
+                linId.setVisibility(View.VISIBLE);
+                linName.setVisibility(View.VISIBLE);
+                linLogin.setVisibility(View.GONE);
                 int id = data.getIntExtra("linkId", 0);
                 String name = data.getStringExtra("name");
                 tvName.setText(name + "");
                 tvId.setText(id + "");
+                isErr = true;
             }
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("TAG", "onstop");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("TAG", "onStart");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("TAG", "onPause");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sp = getContext().getSharedPreferences("sp", MODE_PRIVATE);
+        if (!TextUtils.isEmpty(sp.getString("name", ""))) {
+            tvName.setText(sp.getString("name", "") + "");
+            tvId.setText(sp.getInt("id", 0) + "");
+            isErr = true;
+        }
+
+    }
+
+    private void onClick() {
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                if (list == null) {
+                    return;
+                }
+
+                if (list.get(position).getName() == "收藏") {
+                    startActivity(new Intent(getActivity(), CollectionActivity.class));
+                } else if (list.get(position).getName() == "稍后阅读") {
+
+                } else if (list.get(position).getName() == "开源项目") {
+
+                } else if (list.get(position).getName() == "关于我们") {
+
+                } else if (list.get(position).getName() == "设置") {
+                    startActivity(new Intent(getActivity(), InstallActivity.class)
+                            .putExtra("isErr", isErr)
+                    );
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MessageEvent messageEvent) {
+        isErr = messageEvent.isErr();
+        if (!isErr) {
+            SharedPreferences sp = getContext().getSharedPreferences("sp", MODE_PRIVATE);
+            sp.edit().clear().commit();
+            tvName.setText(sp.getString("name", "") + "");
+            tvId.setText(sp.getString("id", "") + "");
+        }
+    }
+
+
 }

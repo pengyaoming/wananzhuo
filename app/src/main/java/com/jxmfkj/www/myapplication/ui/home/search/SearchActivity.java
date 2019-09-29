@@ -13,12 +13,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.SearchEntity;
 import com.jxmfkj.www.myapplication.Entity.SearchListEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
@@ -102,13 +102,13 @@ public class SearchActivity extends RxAppCompatActivity {
                 .getSearch(page + "", edtText)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<SearchEntity<List<SearchListEntity>>>>() {
+                .subscribe(new Observer<BaseEntity<SearchEntity<List<SearchListEntity>>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(BaseResponse<SearchEntity<List<SearchListEntity>>> s) {
+                    public void onNext(BaseEntity<SearchEntity<List<SearchListEntity>>> s) {
                         adapter.addData(s.getData().getDatas());
                     }
 

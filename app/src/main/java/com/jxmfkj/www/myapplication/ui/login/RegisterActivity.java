@@ -73,9 +73,9 @@ public class RegisterActivity extends RxAppCompatActivity implements View.OnClic
                     }
 
                     @Override
-                    public void onNext(RegisterEntity registerEntityBaseResponse) {
-                        if (registerEntityBaseResponse.getErrorCode() != 0) {
-                            Toast.makeText(RegisterActivity.this, registerEntityBaseResponse.getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    public void onNext(RegisterEntity registerEntityBaseEntity) {
+                        if (registerEntityBaseEntity.getErrorCode() != 0) {
+                            Toast.makeText(RegisterActivity.this, registerEntityBaseEntity.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

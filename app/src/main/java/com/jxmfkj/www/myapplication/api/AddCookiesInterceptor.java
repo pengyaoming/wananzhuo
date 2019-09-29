@@ -10,6 +10,9 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 拦截cookie
+ */
 public class AddCookiesInterceptor implements Interceptor {
     private static final String COOkIE_PREF = "cookie_prefs";
     private Context mContext;
@@ -24,7 +27,7 @@ public class AddCookiesInterceptor implements Interceptor {
         Request.Builder builder = request.newBuilder();
         String cookie = getCookie(request.url().toString(), request.url().host());
         if (!TextUtils.isEmpty(cookie)) {
-            builder.addHeader("Cookie", cookie);
+            builder.addHeader("Set-Cookie", cookie);
         }
         return chain.proceed(builder.build());
     }

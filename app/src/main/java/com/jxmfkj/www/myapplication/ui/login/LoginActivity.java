@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.LoginEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import io.reactivex.Observer;
@@ -87,16 +87,16 @@ public class LoginActivity extends RxAppCompatActivity {
                 .getLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<LoginEntity>>() {
+                .subscribe(new Observer<BaseEntity<LoginEntity>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(BaseResponse<LoginEntity> registerEntity) {
-                        if (registerEntity.getCode() != 0) {
-                            Toast.makeText(LoginActivity.this, registerEntity.getMsg(), Toast.LENGTH_SHORT).show();
+                    public void onNext(BaseEntity<LoginEntity> registerEntity) {
+                        if (registerEntity.getErrorCode() != 0 || registerEntity.getData() == null) {
+                            Toast.makeText(LoginActivity.this,registerEntity.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             int id = registerEntity.getData().getId();
@@ -108,7 +108,6 @@ public class LoginActivity extends RxAppCompatActivity {
                             Intent data = new Intent();
                             data.putExtra("linkId", id);
                             data.putExtra("name", registerEntity.getData().getNickname());
-
                             setResult(15, data);
 //                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();

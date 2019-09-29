@@ -13,6 +13,9 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * 保存cookie
+ */
 public class SaveCookiesInterceptor implements Interceptor {
     private static final String COOKIE_PEEF = "cookie_prefs";
     private Context mContext;
@@ -26,12 +29,13 @@ public class SaveCookiesInterceptor implements Interceptor {
         Request request = chain.request();
         Response response = chain.proceed(request);
         //set_cookie可能为多个
-        if (!response.headers("set_cookie").isEmpty()) {
-            List<String> cookies = response.headers("set_cookie");
+        if (!response.headers("Set-Cookie").isEmpty()) {
+            List<String> cookies = response.headers("Set-Cookie");
             String cookie = encodeCookie(cookies);
             saveCookie(request.url().toString(), request.url().host(), cookie);
         }
         return response;
+
     }
 
     /**
@@ -64,31 +68,36 @@ public class SaveCookiesInterceptor implements Interceptor {
 
     /**
      * 吧cookie保存到本地
+     *
      * @param url
      * @param domain
      * @param cookie
      */
-    private void saveCookie(String url,String domain,String cookie){
-        SharedPreferences sp = mContext.getSharedPreferences(COOKIE_PEEF,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        if (TextUtils.isEmpty(url)){
-            throw  new NullPointerException("url is null");
-        }else {
-            editor.putString(url,cookie);
+    private void saveCookie(String url, String domain, String cookie) {
+        if (!url.equals("https://www.wanandroid.com/user/login")) {
+            return;
         }
-        if (!TextUtils.isEmpty(domain)){
-            editor.putString(domain,cookie);
+        SharedPreferences sp = mContext.getSharedPreferences(COOKIE_PEEF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        if (TextUtils.isEmpty(url)) {
+            throw new NullPointerException("url is null");
+        } else {
+            editor.putString(url, cookie);
+        }
+        if (!TextUtils.isEmpty(domain)) {
+            editor.putString(domain, cookie);
         }
         editor.apply();
     }
 
     /**
      * 清除本地cookie
+     *
      * @param context
      */
-    public static void clearCookie(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(COOKIE_PEEF,Context.MODE_PRIVATE);
+    public static void clearCookie(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(COOKIE_PEEF, Context.MODE_PRIVATE);
         sharedPreferences.edit().apply();
-}
+    }
 
 }

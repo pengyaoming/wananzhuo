@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jxmfkj.www.myapplication.weight.DialogUtil;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import butterknife.ButterKnife;
@@ -40,7 +39,7 @@ public abstract class BaseFragment extends RxFragment implements BaseView {
 
     protected abstract View initView();
 
-    protected abstract View initData();
+    protected abstract void initData();
 
     @Override
     public void onDestroy() {
@@ -53,9 +52,15 @@ public abstract class BaseFragment extends RxFragment implements BaseView {
     }
 
     @Override
+    public void FFinish() {
+
+    }
+
+    @Override
     public void luanchActivity(Intent intent) {
         startActivity(intent);
     }
+
 
     @Override
     public void onStop() {

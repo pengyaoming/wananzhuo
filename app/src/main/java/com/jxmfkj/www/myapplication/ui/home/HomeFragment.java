@@ -15,12 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jxmfkj.www.myapplication.Entity.BaseResponse;
 import com.jxmfkj.www.myapplication.Entity.SwEntity;
 import com.jxmfkj.www.myapplication.R;
 import com.jxmfkj.www.myapplication.adapter.NewsTitlesAdapter;
 import com.jxmfkj.www.myapplication.api.ApiServer;
 import com.jxmfkj.www.myapplication.api.RetrofitUtil;
+import com.jxmfkj.www.myapplication.base.BaseEntity;
 import com.jxmfkj.www.myapplication.ui.home.news.NewsFragment;
 import com.jxmfkj.www.myapplication.ui.home.search.SearchActivity;
 import com.trello.rxlifecycle2.components.support.RxFragment;
@@ -90,22 +90,22 @@ public class HomeFragment extends RxFragment {
                 .getChapters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<BaseResponse<List<SwEntity>>>() {
+                .subscribe(new Observer<BaseEntity<List<SwEntity>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(BaseResponse<List<SwEntity>> listBaseResponse) {
-                        if (listBaseResponse.getCode() != 0) {
-                            Toast.makeText(getActivity(), listBaseResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                    public void onNext(BaseEntity<List<SwEntity>> listBaseEntity) {
+                        if (listBaseEntity.getErrorCode() != 0) {
+                            Toast.makeText(getActivity(), listBaseEntity.getErrorMsg(), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             list.clear();
                             entity.clear();
-                            for (int i = 0; i < listBaseResponse.getData().size(); i++) {
-                                list.add(listBaseResponse.getData().get(i).getName());
-                                entity.add(listBaseResponse.getData().get(i).getId());
+                            for (int i = 0; i < listBaseEntity.getData().size(); i++) {
+                                list.add(listBaseEntity.getData().get(i).getName());
+                                entity.add(listBaseEntity.getData().get(i).getId());
                             }
                             mAdapter.setData(list);
                             isFragment();
