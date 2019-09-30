@@ -24,7 +24,6 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -46,13 +45,7 @@ public interface ApiServer {
     // 采用@FormUrlEncoded注解的原因:API规定采用请求格式x-www-form-urlencoded,即表单形式
     // 需要配合@Field 向服务器提交需要的字段
 
-    /**
-     * 玩安卓开放接口-公众号接口
-     *
-     * @return
-     */
-    @GET("/wxarticle/chapters/json")
-    Call<SwEntity> getSwCall();
+
 
     /**
      * 公众号历史记录
@@ -68,6 +61,12 @@ public interface ApiServer {
     @GET("/wxarticle/chapters/json")
     Observable<BaseEntity<List<SwEntity>>> getChapters();
 
+    /**
+     * 公众号
+     * @param id
+     * @param page
+     * @return
+     */
     @GET("wxarticle/list/{id}/{page}/json")
     Observable<BaseEntity<NewsWEntity<List<NewsEntity>>>> getArticle(@Path("id") String id, @Path("page") String page);
 
@@ -80,13 +79,28 @@ public interface ApiServer {
     @POST("/user/register")
     Observable<RegisterEntity> getRegister(@Field("username") String username, @Field("password") String password, @Field("repassword") String repassword);
 
+    /**
+     * 登录接口
+     * @param username
+     * @param password
+     * @return
+     */
     @FormUrlEncoded
     @POST("/user/login")
     Observable<BaseEntity<LoginEntity>> getLogin(@Field("username") String username, @Field("password") String password);
 
+    /**
+     * 轮播图
+     * @return
+     */
     @GET("/banner/json")
     Observable<BaseEntity<List<BannerEntity>>> getBanner();
 
+    /**
+     * 首页数据
+     * @param page
+     * @return
+     */
     @GET("/article/list/{page}/json")
     Observable<BaseEntity<CssEntity<List<ConsultEntity>>>> getConsult(@Path("page") String page);
 
@@ -139,9 +153,23 @@ public interface ApiServer {
      * @return
      */
     @GET("/lg/collect/list/{page}/json")
-    Observable<BaseEntity<SearchEntity<List<CollectionEntity>>>> getCollection( @Path("page") String page);
+    Observable<BaseEntity<SearchEntity<List<CollectionEntity>>>> getCollection(@Path("page") String page);
 
+    /**
+     * 收藏
+     *
+     * @param id
+     * @return
+     */
     @POST("/lg/collect/{id}/json")
     Observable<BaseEntity> getCilckCollection(@Path("id") String id);
 
+    /**
+     * 取消收藏
+     *
+     * @param id
+     * @return
+     */
+    @POST("/lg/uncollect_originId/{id}/json")
+    Observable<BannerEntity> getIsCollection(@Path("id") String id);
 }

@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 public class CircleImageView extends android.support.v7.widget.AppCompatImageView {
     //画笔
@@ -69,5 +68,4 @@ public class CircleImageView extends android.support.v7.widget.AppCompatImageVie
             super.onDraw(canvas);
         }
     }
-
 }

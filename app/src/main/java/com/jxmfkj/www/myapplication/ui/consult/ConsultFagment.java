@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -123,11 +124,47 @@ public class ConsultFagment extends BaseFragment {
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()) {
                     case R.id.item_collection:
+                        TextView textView = view.findViewById(R.id.item_collection);
                         int id = mAdapter.getItem(position).getId();
-                        Collection(id);
+                        if (mAdapter.getItem(position).isCollect()) {
+                            isCollection(id);
+                            textView.setText("收藏");
+                        } else {
+                            Collection(id);
+                            textView.setText("已收藏");
+                        }
                 }
             }
         });
+    }
+
+    //取消收藏
+    private void isCollection(int id) {
+        RetrofitUtil.getInstance(getContext()).create(ApiServer.class)
+                .getIsCollection(id + "")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BannerEntity>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(BannerEntity bannerEntity) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     //点击收藏
@@ -147,15 +184,19 @@ public class ConsultFagment extends BaseFragment {
 
                         if (baseEntity.getErrorCode() != 0) {
                             showMessage(baseEntity.getErrorMsg());
+                        } else if (mAdapter.isErr) {
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                     }
+
                     @Override
                     public void onComplete() {
                     }
                 });
+
     }
 
 
